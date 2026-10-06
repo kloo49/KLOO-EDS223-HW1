@@ -1,20 +1,23 @@
 ---
-title: "Homework Assignment 1"
+title: "EDS 223 Homework Assignment 1"
 subtitle: "Map Making Practise"
 author: "Kelly Loo"
-date: 2026-10-10
+date: 2026-10-06
 execute: 
   eval: true
 format:
-  html:
-    toc: true
-editor_options: 
+  pdf:
+    toc: false
+    mainfont: Times New Roman
+options: 
   chunk_output_type: console
 ---
 
-# Load libraries and data
+## Load libraries and data
 
+We start off by loading in the necessary libraries.
 ```{r}
+#| output: False
 library(tidyverse)
 library(stars)
 library(here)
@@ -22,68 +25,73 @@ library(sf)
 library(tmap)
 ```
 
+Then, load in our data with `st_read()` as it is a vector.
 ```{r}
-ejscreen <- st_read(here("data", "ejscreen","EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
+#| output: False
+ejscreen <- st_read(here("data", "ejscreen",
+"EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
 ```
 
 ## Filtering
 
-For this assignment, I will be analysing San Diego County in California.
+For this assignment, I will be analysing San Diego County in California. Therefore, I'm taking a subsect of data for the county.
 
 ```{r}
 sandiego <- ejscreen |> 
     filter(STATE_NAME == "California") |> 
     filter(CNTY_NAME == "San Diego County")
-
-orange <- ejscreen |> 
-    filter(STATE_NAME == "California") |> 
-    filter(CNTY_NAME == "Orange County")
 ```
 
-## Relationship between air toxics cancer risk and proximity to traffic in San Diego County
+<!-- {{< pagebreak >}} -->
+
+## Investigating
 
 Is there a correlation between cancer risks from carcinogens in ambient outdoor air and proximity to traffic in San Diego County?
 
+<!-- Plain map of only air toxics cancer risk -->
 ```{r}
+#| warning: false
 tm_shape(sandiego , bbox = c(-117.7, 32.3, -116, 33.6)) +
     tm_polygons(
         "CANCER",
-        fill.legend = tm_legend(title = "Air toxics cancer risk", position = tm_pos_out("right"))
+        fill.legend = tm_legend(title = "Cancer risk (^percentile)", 
+        position = tm_pos_out("right")),
+        col_alpha = 0
     ) +
-    tm_symbols(
-        size = "PTRAF",
-        fill = "green",
-        size.legend = tm_legend(title = "Proximity to traffic (m)", position = tm_pos_out("right")),
-        fill_alpha = 0.25,
-        col_alpha = 0.1
-    ) +
-    tm_title(text = "San Diego County: Cancer Risk \nand Proximity to Traffic") +
+    tm_title(text = "San Diego County: Air toxics cancer risk") +
     tm_compass(position = c("bottom","left")) +
     tm_graticules() +
     tm_scalebar(position = c("bottom","left"))
 ```
+_^According to EJScreen, the air toxics cancer risk indicator was calculated to a statistical percentile. It results in a range from 0 to 100%, with the 35th percentile corresponding to a raw value of 30._
 
-San Diego has three major highways: Interstate 5, 15, and 8 which runs along the coast, inner coast, and parallel to the border respectively. It is no surprise that areas that have proximity to traffic also tends to have higher air toxic cancer risk. Majority of the population in San Diego live near the coast or downtown, where commute via car is common. According to the map, areas with proximity to traffic and higher risk of cancer from air toxics are near the coast and downtown. This could be a call for an increase in public transit and/or to encourage electric vehicle usage.
+A lifetime of inhaling airborne carcinogens leads to an increased cancer risk. This variable in the EJScreen dataset displays these estimations broken down by census tract. Based on the map, there is a concentration of areas with higher air toxics cancer risk near the border in areas such as Chula Vista.
 
-## Relationship between air toxics cancer risk and proximity to traffic in Orange County
+Engine exhaust is an example of a carcinogen. I explore this variable in the next map.
 
 ```{r}
-tm_shape(orange) +
+#| warning: false
+tm_shape(sandiego , bbox = c(-117.7, 32.3, -116, 33.6)) +
     tm_polygons(
         "CANCER",
-        fill.legend = tm_legend(title = "Air toxics cancer risk", position = tm_pos_out("right"))
+        fill.legend = tm_legend(title = "Cancer risk (^percentile)", 
+        position = tm_pos_out("right")),
+        col_alpha = 0
     ) +
     tm_symbols(
         size = "PTRAF",
         fill = "green",
-        size.legend = tm_legend(title = "Proximity to traffic (m)", position = tm_pos_out("right")),
+        size.legend = tm_legend(title = "Proximity to traffic (m)", 
+        position = tm_pos_out("right")),
         fill_alpha = 0.25,
         col_alpha = 0.1
     ) +
-    tm_title(text = "Orange County: Cancer Risk and \nProximity to Traffic") +
+    tm_title(text = "San Diego County: Air Toxics Cancer Risk and \n
+    Proximity to Traffic") +
     tm_compass(position = c("bottom","left")) +
     tm_graticules() +
     tm_scalebar(position = c("bottom","left"))
 ```
+_^See note above_
 
-Now we look at the same metrics but for Orange County. According to the map, areas that have lower air toxics cancer risk are closer to the coast or near the Santa Ana Mountains. Areas that have proximity to traffic and high air toxics cancer risk are in northern Orange County, where there is a prominent grid structure for roads. The exception to this is in San Clemente and its surrounding areas, where the Insterstate 5 runs through the area. Similar to the map for San Diego, this could be a call for public transportation and/or electric vehicles incentives.
+San Diego has three major highways: Interstate 5, 15, and 8 which runs along the coast, inland, and parallel to the border respectively. These can be seen with the density of green. It is no surprise that areas that have proximity to traffic also tends to have higher air toxic cancer risk. Majority of the population in San Diego live near the coast or downtown, where commute via car is common. According to the map, areas with proximity to traffic and higher risk of cancer from air toxics are near the coast and downtown. This could be a call for an increase in public transit and/or to encourage electric vehicle usage.
