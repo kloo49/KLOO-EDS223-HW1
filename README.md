@@ -8,10 +8,11 @@ The deliverables include two maps that communicate an environmental justice issu
 ### Repo structure:
 ```{r}
 KLOO-EDS223-HW1  
-├── data  
-│   └── ejscreen  
-├── kloo-hw1.qmd  
-└── README.md  
+├── data            # folder for the raw data
+│   └── ejscreen    # EJ dataset
+├── kloo-hw1.pdf    # pdf version of the assignment
+├── kloo-hw1.qmd    # quarto version of the assignment
+└── README.md       # readme documentation
 ```
 
 ### Contributors
