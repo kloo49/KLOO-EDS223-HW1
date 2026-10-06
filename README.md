@@ -6,12 +6,13 @@ This assignment uses data from the United States Environmental Protection Agency
 The deliverables include two maps that communicate an environmental justice issue, and a brief paragraph to accompany the map. I focused on the relationship between cancer risk due to air toxics and proximity to traffic in San Diego and Orange County as I have previously lived in these two areas, and would like to understand underlying issues that are more noticible at a larger scale.
 
 ### Repo structure:
-
+```{r}
 KLOO-EDS223-HW1  
 ├── data  
 │   └── ejscreen  
 ├── kloo-hw1.qmd  
 └── README.md  
+```
 
 ### Contributors
 Author: Kelly Loo  
