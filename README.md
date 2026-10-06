@@ -8,8 +8,9 @@ The deliverables include two maps that communicate an environmental justice issu
 ### Repo structure:
 
 KLOO-EDS223-HW1
-├── data
-│   └── ejscreen
+├── .gitignore
+│   └── data
+│      └── ejscreen
 ├── kloo-hw1.qmd
 └── README.md
 
