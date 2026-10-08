@@ -2,7 +2,7 @@
 title: "EDS 223 Homework Assignment 1"
 subtitle: "Map Making Practise"
 author: "Kelly Loo"
-date: 2026-10-06
+date: 2026-10-08
 execute: 
   eval: true
 format:
@@ -42,11 +42,11 @@ sandiego <- ejscreen |>
     filter(CNTY_NAME == "San Diego County")
 ```
 
-<!-- {{< pagebreak >}} -->
-
 ## Investigating
 
 Is there a correlation between cancer risks from carcinogens in ambient outdoor air and proximity to traffic in San Diego County?
+
+First, let's look at the cancer risk due to air toxics:
 
 <!-- Plain map of only air toxics cancer risk -->
 ```{r}
@@ -58,14 +58,17 @@ tm_shape(sandiego , bbox = c(-117.7, 32.3, -116, 33.6)) +
         position = tm_pos_out("right")),
         col_alpha = 0
     ) +
-    tm_title(text = "San Diego County: Air toxics cancer risk") +
+    tm_title(text = "San Diego County: Air toxics cancer risk",
+            size = 1.1,
+            fontface = "bold") +
+    tm_layout(component.autoscale = FALSE) +
     tm_compass(position = c("bottom","left")) +
     tm_graticules() +
     tm_scalebar(position = c("bottom","left"))
 ```
 _^According to EJScreen, the air toxics cancer risk indicator was calculated to a statistical percentile. It results in a range from 0 to 100%, with the 35th percentile corresponding to a raw value of 30._
 
-A lifetime of inhaling airborne carcinogens leads to an increased cancer risk. This variable in the EJScreen dataset displays these estimations broken down by census tract. Based on the map, there is a concentration of areas with higher air toxics cancer risk near the border in areas such as Chula Vista.
+Inhaling airborne carcinogens leads to an increased cancer risk. This variable in the EJScreen dataset displays these estimations broken down by census tract. A darker shade indicates a higher proportionate percentile of cancer risk, while a lower shade indicates a lower risk. Based on the map, there is a concentration of areas with higher air toxics cancer risk near the border in areas such as Chula Vista.
 
 Engine exhaust is an example of a carcinogen. I explore this variable in the next map.
 
@@ -75,23 +78,26 @@ tm_shape(sandiego , bbox = c(-117.7, 32.3, -116, 33.6)) +
     tm_polygons(
         "CANCER",
         fill.legend = tm_legend(title = "Cancer risk (^percentile)", 
-        position = tm_pos_out("right")),
+                                position = tm_pos_out("right"),
+                                height = 11),
         col_alpha = 0
     ) +
     tm_symbols(
         size = "PTRAF",
         fill = "green",
         size.legend = tm_legend(title = "Proximity to traffic (m)", 
-        position = tm_pos_out("right")),
+                                position = tm_pos_out("right"),
+                                height = 11),
         fill_alpha = 0.25,
         col_alpha = 0.1
     ) +
-    tm_title(text = "San Diego County: Air Toxics Cancer Risk and \n
-    Proximity to Traffic") +
     tm_compass(position = c("bottom","left")) +
     tm_graticules() +
-    tm_scalebar(position = c("bottom","left"))
+    tm_scalebar(position = c("bottom","left")) +
+    tm_title("San Diego County: Air Toxics Cancer \nRisk and Proximity to Traffic",
+           size = 0.9, fontface = "bold") +
+    tm_layout(component.autoscale = FALSE)
 ```
 _^See note above_
 
-San Diego has three major highways: Interstate 5, 15, and 8 which runs along the coast, inland, and parallel to the border respectively. These can be seen with the density of green. It is no surprise that areas that have proximity to traffic also tends to have higher air toxic cancer risk. Majority of the population in San Diego live near the coast or downtown, where commute via car is common. According to the map, areas with proximity to traffic and higher risk of cancer from air toxics are near the coast and downtown. This could be a call for an increase in public transit and/or to encourage electric vehicle usage.
+San Diego has three major highways: Interstate 5, 15, and 8 which runs along the coast, inland, and parallel to the border respectively. These can be seen with the density and size of green circles, where a smaller size indicates a closer proximity to traffic. This map lays the proximity to traffic over the previous map. According to the map, areas that have proximity to traffic also tend to have higher air toxic cancer risk. Majority of the population in San Diego live near the coast or downtown, where commute via car is common and where the overlap in data lie. This could be a call for an increase in public transit and/or to encourage electric vehicle usage.
