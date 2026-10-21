@@ -1,0 +1,88 @@
+---
+title: "EDS 223 Homework Assignment 1 Revision"
+subtitle: "Map Making Practise"
+author: "Kelly Loo"
+date: 2026-10-20
+execute: 
+  eval: true
+format:
+  pdf:
+    toc: false
+    mainfont: Times New Roman
+options: 
+  chunk_output_type: console
+---
+
+## Load libraries and data
+```{r}
+#| output: False
+library(tidyverse)
+library(stars)
+library(here)
+library(sf)
+library(tmap)
+```
+
+```{r}
+#| output: False
+# Load data
+ejscreen <- st_read(here("data", "ejscreen",
+"EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
+```
+
+## Filtering
+```{r}
+# subsect for San Diego County
+sandiego <- ejscreen |> 
+    filter(STATE_NAME == "California") |> 
+    filter(CNTY_NAME == "San Diego County")
+```
+
+## Mapping
+```{r}
+#| warning: false
+tm_shape(sandiego , bbox = c(-117.7, 32.3, -116, 33.6)) +
+    tm_polygons(
+        "P_CANCER",
+        fill.legend = tm_legend(title = "Cancer risk (^percentile)", 
+                                position = tm_pos_out("right")),
+        col_alpha = 0
+    ) +
+    tm_title(text = "San Diego County: Air toxics cancer risk",
+            size = 1.1,
+            fontface = "bold") +
+    tm_layout(component.autoscale = FALSE) +
+    tm_compass(position = c("bottom","left")) +
+    tm_graticules() +
+    tm_scalebar(position = c("bottom","left"))
+```
+
+```{r}
+#| warning: false
+tm_shape(sandiego , bbox = c(-117.7, 32.3, -116, 33.6)) +
+    tm_polygons(
+        "P_CANCER",
+        fill.legend = tm_legend(title = "Cancer risk (^percentile)", 
+                                position = tm_pos_out("right"),
+                                height = 11),
+        col_alpha = 0
+    ) +
+    tm_symbols(
+        size = "PTRAF",
+        fill = "green",
+        size.legend = tm_legend(title = "Proximity to traffic (m)", 
+                                position = tm_pos_out("right"),
+                                height = 11),
+        fill_alpha = 0.25,
+        col_alpha = 0.1
+    ) +
+    tm_compass(position = c("bottom","left")) +
+    tm_graticules() +
+    tm_scalebar(position = c("bottom","left")) +
+    tm_title("San Diego County: Air Toxics Cancer \nRisk and Proximity to Traffic",
+           size = 0.9, fontface = "bold") +
+    tm_layout(component.autoscale = FALSE)
+```
+_^According to EJScreen, the air toxics cancer risk indicator was calculated to a statistical percentile. It results in a range from 0 to 100%, with the 35th percentile corresponding to a raw value of 30._
+
+In the original assignment, I wanted to plot the percentitle of cancer, but I picked the wrong column from EJScreen. Therefore, I revised and changed `CANCER` to `P_CANCER` to properly reflect that on both maps.
